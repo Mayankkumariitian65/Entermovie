@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const API_KEY = "a3987981";
 
@@ -8,6 +8,20 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Perform a default search on first load so some movies appear by default
+  useEffect(() => {
+    const defaultSearch = "avengers";
+    setLoading(true);
+    fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${defaultSearch}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setMovies(data.Search || []);
+        setQuery(defaultSearch);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
  
   const handleSearch = () => {
